@@ -1,8 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from './entities/users.entity';
+import { Users } from './users/entities/users.entity';
 import { Posts } from './entities/posts.entity';
 import { PostComments } from './entities/post-comments.entity';
+import { UsersRepository } from './users/repositories/users.repository';
 
 @Global()
 @Module({
@@ -19,6 +20,7 @@ import { PostComments } from './entities/post-comments.entity';
     }),
     TypeOrmModule.forFeature([Users, Posts, PostComments]),
   ],
-  exports: [TypeOrmModule],
+  providers: [UsersRepository],
+  exports: [TypeOrmModule, UsersRepository],
 })
 export class DataModule {}

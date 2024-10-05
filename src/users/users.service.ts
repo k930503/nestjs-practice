@@ -1,45 +1,30 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Users } from '../entities/users.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, Repository } from 'typeorm';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Users } from './entities/users.entity';
 import { CreateUserRequestDto } from './dto/create-user.request.dto';
 import { CreateUserResponseDto } from './dto/create-user.response.dto';
 import { GetUserResponseDto } from './dto/get-user.response.dto';
-import { PostsService } from '../posts/posts.service';
-import { PostCommentsService } from '../post-comments/post-comments.service';
+import { UsersRepository } from './repositories/users.repository';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
-  constructor(
-    @InjectRepository(Users)
-    private readonly usersRepository: Repository<Users>,
-    // private readonly postsService: PostsService,
-  ) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async getUser(id: number): Promise<GetUserResponseDto> {
     this.logger.log('getUser');
-    const user = await this.usersRepository
-      .createQueryBuilder()
-      .where('id = :id', { id })
-      .getOne();
-    // this.postsService.testPosts();
-    // this.postsService.postCommentsService.testPostComments();
+    const user: Users = await this.usersRepository.findOneById(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
     return GetUserResponseDto.create(user.id, user.name, user.age);
   }
 
   async createUser(
     payload: CreateUserRequestDto,
   ): Promise<CreateUserResponseDto> {
-    const result: InsertResult = await this.usersRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Users)
-      .values(payload)
-      .returning(['id'])
-      .execute();
-    const userId: number = result.raw[0].id;
-    return CreateUserResponseDto.create(userId, payload.name, payload.age);
+    const user: Users = Object.assign(new Users(), payload);
+    await this.usersRepository.create(user);
+    return CreateUserResponseDto.create(user.id, user.name, user.age);
   }
 
   testUsers() {
