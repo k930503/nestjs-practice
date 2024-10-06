@@ -6,6 +6,9 @@ export class Users {
   @PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   id: number;
 
+  @Column('character varying', { name: 'email' })
+  email: string;
+
   @Column('character varying', { name: 'name' })
   name: string;
 

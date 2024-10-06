@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PostCommentsService } from './post-comments.service';
 import { CreatePostCommentResponseDto } from './dto/create-post-comment.response.dto';
 import { CreatePostCommentRequestDto } from './dto/create-post-comment.request.dto';
-import { PostComments } from '../entities/post-comments.entity';
+import { PostComments } from './entities/post-comments.entity';
 
 @Controller('post-comments')
 export class PostCommentsController {

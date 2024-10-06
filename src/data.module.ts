@@ -1,11 +1,12 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './users/entities/users.entity';
-import { Posts } from './entities/posts.entity';
-import { PostComments } from './entities/post-comments.entity';
+import { Posts } from './posts/entities/posts.entity';
+import { PostComments } from './post-comments/entities/post-comments.entity';
 import { UsersRepository } from './users/repositories/users.repository';
+import { PostsRepository } from './posts/repositories/posts.repository';
+import { PostCommentsRepository } from './post-comments/repositories/post-comments.repository';
 
-@Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,7 +21,12 @@ import { UsersRepository } from './users/repositories/users.repository';
     }),
     TypeOrmModule.forFeature([Users, Posts, PostComments]),
   ],
-  providers: [UsersRepository],
-  exports: [TypeOrmModule, UsersRepository],
+  providers: [UsersRepository, PostsRepository, PostCommentsRepository],
+  exports: [
+    TypeOrmModule,
+    UsersRepository,
+    PostsRepository,
+    PostCommentsRepository,
+  ],
 })
 export class DataModule {}
