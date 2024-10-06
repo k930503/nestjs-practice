@@ -8,7 +8,13 @@ import { PostCommentsModule } from './post-comments/post-comments.module';
 import { NoticesModule } from './notices/notices.module';
 
 @Module({
-  imports: [DataModule, UsersModule, PostsModule, PostCommentsModule, NoticesModule],
+  imports: [
+    DataModule,
+    UsersModule,
+    PostsModule,
+    PostCommentsModule,
+    NoticesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

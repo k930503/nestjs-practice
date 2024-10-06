@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
-import { UsersModule } from '../users/users.module';
-import { UsersService } from '../users/users.service';
-import { PostCommentsService } from '../post-comments/post-comments.service';
+import { DataModule } from '../data.module';
 import { PostCommentsModule } from '../post-comments/post-comments.module';
 
 @Module({
-  imports: [],
+  imports: [DataModule, PostCommentsModule],
   controllers: [PostsController],
   providers: [PostsService],
   exports: [],

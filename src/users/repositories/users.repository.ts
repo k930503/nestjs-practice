@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, QueryFailedError, Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Users } from '../entities/users.entity';
 
 @Injectable()
@@ -20,6 +20,17 @@ export class UsersRepository {
         return null;
       }
       return user;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        Logger.error(`Database query failed: ${error.message}`, error.stack);
+      }
+      throw error;
+    }
+  }
+
+  async existsByEmail(email: string): Promise<boolean> {
+    try {
+      return await this.usersRepository.exists({ where: { email } });
     } catch (error) {
       if (error instanceof QueryFailedError) {
         Logger.error(`Database query failed: ${error.message}`, error.stack);
