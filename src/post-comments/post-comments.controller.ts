@@ -9,14 +9,14 @@ export class PostCommentsController {
   constructor(private readonly postCommentsService: PostCommentsService) {}
 
   @Get('/:id')
-  async getPostComment(@Param('id') id: number): Promise<PostComments> {
-    return await this.postCommentsService.getPostComment(id);
+  async findOneById(@Param('id') id: number): Promise<PostComments> {
+    return await this.postCommentsService.findOneById(id);
   }
 
   @Post()
-  async createPostComment(
+  async create(
     @Body() payload: CreatePostCommentRequestDto,
   ): Promise<CreatePostCommentResponseDto> {
-    return await this.postCommentsService.createPostComment(payload);
+    return await this.postCommentsService.create(payload);
   }
 }

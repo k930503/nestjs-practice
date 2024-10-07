@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePostRequestDto } from './dto/create-post.request.dto';
 import { CreatePostResponseDto } from './dto/create-post.response.dto';
 import { GetPostResponseDto } from './dto/get-post.response.dto';
 import { PostsRepository } from './repositories/posts.repository';
 import { EntityManager } from 'typeorm';
 import { PostCommentsService } from '../post-comments/post-comments.service';
+import { Posts } from './entities/posts.entity';
 
 @Injectable()
 export class PostsService {
@@ -16,26 +17,17 @@ export class PostsService {
   ) {}
 
   async findOneById(id: number): Promise<GetPostResponseDto> {
-    // const post = await this.postsRepository
-    //   .createQueryBuilder()
-    //   .where('id = :id', { id })
-    //   .getOne();
-
-    // this.postCommentsService.testPostComments();
-
-    return GetPostResponseDto.create(id, '', 1);
+    const post: Posts = await this.postsRepository.findOneById(id);
+    if (!post) {
+      throw new NotFoundException();
+    }
+    return GetPostResponseDto.create(post.id, post.content, post.userId);
   }
 
   async create(payload: CreatePostRequestDto): Promise<CreatePostResponseDto> {
-    // const result: InsertResult = await this.postsRepository
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into(Posts)
-    //   .values(payload)
-    //   .returning(['id'])
-    //   .execute();
-    // const id: number = result.raw[0].id;
-    return CreatePostResponseDto.create(1, payload.content, payload.userId);
+    const post: Posts = Object.assign(new Posts(), payload);
+    await this.postsRepository.create(post);
+    return CreatePostResponseDto.create(post.id, post.content, post.userId);
   }
 
   async deleteById(id: number): Promise<void> {
