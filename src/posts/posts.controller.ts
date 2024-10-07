@@ -21,5 +21,7 @@ export class PostsController {
   }
 
   @Delete()
-  async deleteById(@Param('id') id: number): Promise<void> {}
+  async deleteById(@Param('id') id: number): Promise<void> {
+    return await this.postsService.deleteById(id);
+  }
 }
